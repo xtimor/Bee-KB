@@ -9,8 +9,11 @@ import {
     Typography,
     InputAdornment,
     CircularProgress,
+    IconButton,
+    Tooltip,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useSession } from 'next-auth/react';
 import NavigationTree from './NavigationTree';
 
@@ -29,6 +32,7 @@ export default function NavigationPanel({
     const [searchQuery, setSearchQuery] = useState('');
     const [logo, setLogo] = useState<string | null>(null);
     const [logoLoading, setLogoLoading] = useState(true);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         // Fetch logo
@@ -108,46 +112,67 @@ export default function NavigationPanel({
 
             {/* Search Field */}
             <Box sx={{ p: 2 }}>
-                <TextField
-                    fullWidth
-                    placeholder="Search documents..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
-                            </InputAdornment>
-                        ),
-                        sx: {
-                            background: 'rgba(255, 255, 255, 0.15)',
-                            backdropFilter: 'blur(10px)',
-                            borderRadius: 2,
-                            color: 'white',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none',
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <TextField
+                        fullWidth
+                        placeholder="Search documents..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
+                                </InputAdornment>
+                            ),
+                            sx: {
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: 2,
+                                color: 'white',
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    border: 'none',
+                                },
+                                '&:hover': {
+                                    background: 'rgba(255, 255, 255, 0.2)',
+                                },
+                                '&.Mui-focused': {
+                                    background: 'rgba(255, 255, 255, 0.25)',
+                                },
                             },
-                            '&:hover': {
-                                background: 'rgba(255, 255, 255, 0.2)',
+                        }}
+                        sx={{
+                            '& input::placeholder': {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                opacity: 1,
                             },
-                            '&.Mui-focused': {
-                                background: 'rgba(255, 255, 255, 0.25)',
-                            },
-                        },
-                    }}
-                    sx={{
-                        '& input::placeholder': {
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            opacity: 1,
-                        },
-                    }}
-                />
+                        }}
+                    />
+
+                    <Tooltip title="Refresh folder tree">
+                        <IconButton
+                            onClick={() => setRefreshKey((key) => key + 1)}
+                            sx={{
+                                color: 'white',
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
+                                borderRadius: 2,
+                                width: 48,
+                                height: 48,
+                                '&:hover': {
+                                    background: 'rgba(255, 255, 255, 0.15)',
+                                },
+                            }}
+                        >
+                            <RefreshIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
             </Box>
 
             {/* Navigation Tree */}
             <Box sx={{ flex: 1, overflow: 'auto', px: 2 }}>
                 <NavigationTree
                     rootFolderId={rootFolderId}
+                    refreshKey={refreshKey}
                     searchQuery={searchQuery}
                     onDocumentSelect={onDocumentSelect}
                 />

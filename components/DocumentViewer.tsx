@@ -12,20 +12,26 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import FolderIcon from '@mui/icons-material/Folder';
 import LockIcon from '@mui/icons-material/Lock';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import packageJson from '../package.json';
 
 interface DocumentViewerProps {
     documentId: string | null;
     documentName: string;
+    rootFolderId: string;
+    rootFolderName?: string;
 }
 
 export default function DocumentViewer({
     documentId,
     documentName,
+    rootFolderId,
+    rootFolderName,
 }: DocumentViewerProps) {
     const [document, setDocument] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const isDevelopment = process.env.NODE_ENV === 'development';
 
     useEffect(() => {
         if (!documentId) {
@@ -99,6 +105,41 @@ export default function DocumentViewer({
                 background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
             }}
         >
+            {isDevelopment && (
+                <Paper
+                    elevation={0}
+                    sx={{
+                        px: 3,
+                        py: 1.5,
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                        borderRadius: 0,
+                        background: 'rgba(255, 255, 255, 0.85)',
+                        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                        color: 'text.secondary',
+                    }}
+                >
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        Dev mode — version {packageJson.version}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        component="a"
+                        href={`https://drive.google.com/drive/folders/${rootFolderId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                            color: 'primary.main',
+                            textDecoration: 'none',
+                            '&:hover': { textDecoration: 'underline' },
+                        }}
+                    >
+                        {rootFolderName ? `${rootFolderName} (${rootFolderId})` : rootFolderId}
+                    </Typography>
+                </Paper>
+            )}
+
             {/* Document Header */}
             <Paper
                 elevation={0}

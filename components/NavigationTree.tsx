@@ -17,12 +17,14 @@ interface FolderStructure {
 
 interface NavigationTreeProps {
     rootFolderId: string;
+    refreshKey: number;
     searchQuery: string;
     onDocumentSelect: (documentId: string, documentName: string) => void;
 }
 
 export default function NavigationTree({
     rootFolderId,
+    refreshKey,
     searchQuery,
     onDocumentSelect,
 }: NavigationTreeProps) {
@@ -55,7 +57,7 @@ export default function NavigationTree({
         };
 
         fetchTree();
-    }, [rootFolderId]);
+    }, [rootFolderId, refreshKey]);
 
     const renderTree = (node: FolderStructure) => {
         const isDocument = node.type === 'document';
