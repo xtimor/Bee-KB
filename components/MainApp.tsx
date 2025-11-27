@@ -69,6 +69,8 @@ export default function MainApp() {
                 <DocumentViewer
                     documentId={selectedDocId}
                     documentName={selectedDocName}
+                    rootFolderId={kbInstance.root_folder_id}
+                    rootFolderName={kbInstance.root_folder_name}
                 />
             </Box>
         </Box>
